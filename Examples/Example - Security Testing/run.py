@@ -3,7 +3,6 @@ import os
 import random
 from IUNI.IUNI import SecurityTester
 
-# Define the target URLs, headers, and cookies for different APIs
 apis = [
     {
         'url': 'https://jsonplaceholder.typicode.com/comments',
@@ -33,12 +32,9 @@ apis = [
     }
 ]
 
-# Iterate over each API and run tests on it
 for api in apis:
-    # Create a SecurityTester instance for the API
     security_tester = SecurityTester(api['url'], headers=api['headers'], cookies=api['cookies'])
-
-    # Define the test cases for the API
+    
     tests = [
         ('Command injection', '', '; ls'),
         ('XSS vulnerability', '', '<script>alert("XSS")</script>'),
@@ -59,17 +55,13 @@ for api in apis:
          f'<img src="http://localhost/api/delete_user/1234" onload="var xhr = new XMLHttpRequest(); xhr.open(\'POST\', \'http://localhost/api/delete_user/1234\', true); xhr.send();" />')
     ]
 
-    # Add API-specific test cases
     if 'params' in api:
         params = api['params']
         tests.append(('API parameter injection', '', f"{params['q']}'; DROP TABLE users;--"))
 
-    # Shuffle the test cases
     random.shuffle(tests)
 
-    # Run the tests for the API
     security_tester.run_tests(tests)
 
-    # Print the test results for the API
     security_tester.print_summary()
 
